@@ -8,6 +8,8 @@
 
 #include <iostream>
 
+// todo: include vulkan locally
+
 int main() {
     glfwInit();
 
