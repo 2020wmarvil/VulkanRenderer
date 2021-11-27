@@ -19,6 +19,7 @@ const std::vector<const char*> validationLayers = {
     const bool enableValidationLayers = true;
 #endif
 
+#pragma region DEBUG UTILS
 VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
     auto func = (PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
     if (func != nullptr) {
@@ -34,6 +35,7 @@ void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT
         func(instance, debugMessenger, pAllocator);
     }
 }
+#pragma endregion
 
 class HelloTriangleApplication {
 public:
@@ -49,6 +51,7 @@ private:
     VkInstance instance;
     VkDebugUtilsMessengerEXT debugMessenger;
 
+    #pragma region INIT WINDOW
     void initWindow() {
         glfwInit(); // init glfw
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); // tell glfw we arent using opengl
@@ -56,12 +59,16 @@ private:
 
         window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
     }
+    #pragma endregion
 
+    #pragma region INIT VULKAN
     void initVulkan() {
         createInstance();
         setupDebugMessenger();
+        pickPhysicalDevice();
     }
 
+    #pragma region CREATE INSTANCE
     void createInstance() {
         if (enableValidationLayers && !checkValidationLayerSupport()) {
             throw std::runtime_error("validation layers requested, but not available!");
@@ -131,7 +138,9 @@ private:
     
         return extensions;
     }
+    #pragma endregion
 
+    #pragma region DEBUG MESENGER
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
         VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
         VkDebugUtilsMessageTypeFlagsEXT messageType,
@@ -166,13 +175,25 @@ private:
 	        throw std::runtime_error("failed to set up debug messenger!");
 	    }
     }
+    #pragma endregion
+    
+    #pragma region PICK DEVICE
+    void pickPhysicalDevice() {
 
+    }
+    #pragma endregion
+    
+    #pragma endregion
+
+    #pragma region MAIN LOOP
     void mainLoop() {
         while (!glfwWindowShouldClose(window)) {
             glfwPollEvents();
         }
     }
+    #pragma endregion
 
+    #pragma region CLEANUP
     void cleanup() {
         if (enableValidationLayers) {
             DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
@@ -182,6 +203,7 @@ private:
         glfwDestroyWindow(window);
         glfwTerminate();
     }
+    #pragma endregion
 };
 
 int main() {
